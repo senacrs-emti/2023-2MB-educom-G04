@@ -1,0 +1,20 @@
+Rotas:
+
+/start
+  Envia: Nome do jogador
+  Recebe: Código do jogador
+
+/new_round
+  Envia: Código do jogador
+  Recebe: Opções de resposta
+
+/verify_answer 
+  Envia: Código do jogador e id da resposta
+  Recebe: true/false se acertou ou não e pontuação
+
+/ranking
+  Recebe: 10 primeiros do ranking com nome e pontuação
+
+/player_ranking
+  Envia: Código do jogador
+  Recebe: 10 primeiros do ranking e jogador atual com nome e pontuação
