@@ -1,20 +1,43 @@
 Rotas:
 
-/start
-  Envia: Nome do jogador
+/start_single
+  Envia : Nome do jogador
   Recebe: Código do jogador
 
-/new_round
-  Envia: Código do jogador
+/start_multi
+  Envia : Nome do jogador
+  Envia : Código da sala
+  Recebe: Código do jogaodor
+
+/new_question
+  Envia : Código do jogador
   Recebe: Opções de resposta
 
 /verify_answer 
-  Envia: Código do jogador e id da resposta
-  Recebe: true/false se acertou ou não e pontuação
+  Envia : Código do jogador
+  Envia : Id da resposta
+  Recebe: True/false se acertou ou não
+  Recebe: Pontuação
 
-/ranking
-  Recebe: 10 primeiros do ranking com nome e pontuação
+/new_round
+  Envia : Código do jogador
+  Envia : Tempo que sobrou
+  Recebe: Pontuação
 
-/player_ranking
-  Envia: Código do jogador
-  Recebe: 10 primeiros do ranking e jogador atual com nome e pontuação
+/ranking_general
+  Recebe: 10 primeiros do ranking geral
+
+/ranking_room
+  Envia : Código da sala
+  Recebe: 10 primeiros do ranking da sala
+
+/ranking_general_player
+  Envia : Código do jogador
+  Recebe: 10 primeiros do ranking geral
+  Recebe: Posição do jogador
+
+/ranking_room_player
+  Envia : Código do jogador
+  Envia : Código da sala
+  Recebe: 10 primeiros do ranking da sala
+  Recebe: Posição do jogador
