@@ -1,5 +1,9 @@
 Rotas:
 
+/create_room
+  Envia : Nome sala
+  Recebe: Código sala
+
 /start_single
   Envia : Nome do jogador
   Recebe: Código do jogador

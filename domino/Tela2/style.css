@@ -1,0 +1,43 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: rgb(255, 255, 255);
+}
+
+.border{
+    width: 1500px;
+    height: 693px;
+    margin: 0 auto;
+    background-color: rgb(42, 57, 57);
+    border-radius: 10px;
+}
+
+.title{
+    text-align: center;
+    padding: 40px;
+    margin: 5px;
+    font-family: cursive;
+    font-size: 25px;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 45px;
+    font-size: large;
+    padding: 185px;
+    margin: 5px;
+}
+
+.button{
+    background-color: gray;
+}
+
+h3 {
+    font-size: 40px;
+    font-family: cursive;
+}
+
