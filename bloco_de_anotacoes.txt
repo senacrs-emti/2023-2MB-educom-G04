@@ -1,5 +1,6 @@
 Rotas:
 
+Post:
 /create_room
   Envia : Nome sala
   Recebe: Código sala
@@ -28,6 +29,7 @@ Rotas:
   Envia : Tempo que sobrou
   Recebe: Pontuação
 
+Get:
 /ranking_general
   Recebe: 10 primeiros do ranking geral
 
@@ -35,6 +37,7 @@ Rotas:
   Envia : Código da sala
   Recebe: 10 primeiros do ranking da sala
 
+Post:
 /ranking_general_player
   Envia : Código do jogador
   Recebe: 10 primeiros do ranking geral

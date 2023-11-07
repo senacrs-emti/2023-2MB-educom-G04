@@ -5,7 +5,8 @@ USE DominoOnline;
 CREATE TABLE Room (
     ID INT PRIMARY KEY AUTO_INCREMENT,
     Code VARCHAR(255),
-    Name VARCHAR(255)
+    Name VARCHAR(255),
+    Created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE Games (

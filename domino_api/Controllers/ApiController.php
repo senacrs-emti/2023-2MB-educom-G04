@@ -1,7 +1,10 @@
 <?php
+define('CHARACTERS', '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+
 class ApiController 
 {
     private $model;
+    private $data = array();
 
     public function __construct()
     {
@@ -10,9 +13,43 @@ class ApiController
         header('Content-Type: application/json');
     }
 
-    private function returnError($data, $message)
+    private function returnError($message)
     {
-        $data['description'] = $message;
+        $this->data['Error'] = true;
+        $this->data['Description'] = $message;
+        die(json_encode($this->data));
+    }
+
+    private function CreateRoom()
+    {
+        if (!isset($_GET['room_name']))
+            $this->returnError('Room name was not send');
+
+        $lastRoom = $this->model->getLastRoom()->fetch_assoc();
+
+        print_r($lastRoom);
+
+        if (empty($lastRoom))
+            $lastRoom['Code'] = '';
+
+        $lastRoom['Name'] = $_GET['room_name'];
+
+        $sobra = 1;
+        for ($i = strlen($lastRoom['Code']) - 1; $i >= 0; $i--) {
+            $pos = strpos(CHARACTERS, $lastRoom['Code'][$i]) + $sobra;
+            $sobra = (int)($pos / 62);
+            $lastRoom['Code'][$i] = CHARACTERS[$pos % 62];
+        }
+
+        if ($sobra !== 0) {
+            $lastRoom['Code'] = CHARACTERS[$sobra % 62] . $lastRoom['Code'];
+        }
+
+        $this->model->saveRoom($lastRoom['Code'], $lastRoom['Name']);
+
+        $data['Error'] = false;
+        $data['Code'] = $lastRoom['Code'];
+
         die(json_encode($data));
     }
 
@@ -20,25 +57,16 @@ class ApiController
     {
         // Aqui farei a vaiidação dos dados enviados e chamarei a função específica para trarar os dados
         // Essa função irá utilizar do model para recuperar os dados do banco de dados ou chamar as funções espeficidas de outras classes
-        $data = array();
-        $data['error'] = true;
         
         if (!isset($_GET['command']))
-            $this->returnError($data, 'Command to execute was not send');
+            $this->returnError('Command to execute was not send');
 
         $command = $_GET['command'];
 
         if ($command == "create_room")
-        {
-            if (!isset($_GET['room_name']))
-                $this->returnError($data, 'Room name was not send'); 
-
-            $data['error'] = false;
-            $data['room_name'] = $_GET['room_name']; // aqui chamar a função que realizará a logica e salvar no bd 
-            die(json_encode($data)); 
-        }
+            $this->CreateRoom();
         else
-            $this->returnError($data, 'Invalid command');
+            $this->returnError('Invalid command');
 
         
         /*
@@ -58,7 +86,7 @@ class ApiController
         }
         */
 
-        echo json_encode($data);
+        echo json_encode($this->data);
     }
 }
 ?>
