@@ -1,50 +1,34 @@
 Rotas:
 
 Post:
-/create_room
+/create_room OK
   Envia : Nome sala
   Recebe: Código sala
 
-/start_single
-  Envia : Nome do jogador
-  Recebe: Código do jogador
-
-/start_multi
+/start_game OK
   Envia : Nome do jogador
   Envia : Código da sala
-  Recebe: Código do jogaodor
+  Recebe: ID do jogo
 
-/new_question
-  Envia : Código do jogador
+/new_question OK
+  Envia : ID do jogo
   Recebe: Opções de resposta
 
-/verify_answer 
-  Envia : Código do jogador
-  Envia : Id da resposta
+/verify_answer OK
+  Envia : ID do jogo
+  Envia : Index da resposta
   Recebe: True/false se acertou ou não
   Recebe: Pontuação
 
-/new_round
+/new_round OK
   Envia : Código do jogador
   Envia : Tempo que sobrou
   Recebe: Pontuação
 
 Get:
-/ranking_general
+/ranking_general OK
   Recebe: 10 primeiros do ranking geral
 
-/ranking_room
+/ranking_room OK 
   Envia : Código da sala
   Recebe: 10 primeiros do ranking da sala
-
-Post:
-/ranking_general_player
-  Envia : Código do jogador
-  Recebe: 10 primeiros do ranking geral
-  Recebe: Posição do jogador
-
-/ranking_room_player
-  Envia : Código do jogador
-  Envia : Código da sala
-  Recebe: 10 primeiros do ranking da sala
-  Recebe: Posição do jogador

@@ -27,23 +27,21 @@ class ApiController
 
         $lastRoom = $this->model->getLastRoom()->fetch_assoc();
 
-        print_r($lastRoom);
-
         if (empty($lastRoom))
             $lastRoom['Code'] = '';
 
         $lastRoom['Name'] = $_GET['room_name'];
 
         $sobra = 1;
-        for ($i = strlen($lastRoom['Code']) - 1; $i >= 0; $i--) {
+        for ($i = strlen($lastRoom['Code']) - 1; $i >= 0; $i--)
+        {
             $pos = strpos(CHARACTERS, $lastRoom['Code'][$i]) + $sobra;
             $sobra = (int)($pos / 62);
             $lastRoom['Code'][$i] = CHARACTERS[$pos % 62];
         }
 
-        if ($sobra !== 0) {
+        if ($sobra !== 0)
             $lastRoom['Code'] = CHARACTERS[$sobra % 62] . $lastRoom['Code'];
-        }
 
         $this->model->saveRoom($lastRoom['Code'], $lastRoom['Name']);
 
@@ -53,11 +51,240 @@ class ApiController
         die(json_encode($data));
     }
 
+    private function ranking_general()
+    {
+        $ranking = $this->model->getRankingGeneral();
+
+        $data['Error'] = false;
+        $data['Ranking'] = array();
+
+        while ($row = $ranking->fetch_assoc())
+        {
+            $data['Ranking'][] = array(
+                'Name' => $row['Name'],
+                'Score' => $row['Score']
+            );
+        }
+
+        die(json_encode($data));
+    }
+
+    public function ranking_room()
+    {
+        if (!isset($_GET['room_code']))
+            $this->returnError('Room code was not send');
+
+        $roomId = $this->model->existsRoom($_GET['room_code'])->fetch_assoc();
+
+        if (empty($roomId))
+            $this->returnError('Room does not exists');
+        
+        $ranking = $this->model->getRankingRoom($roomId['ID']);
+
+        $data['Error'] = false;
+        $data['Ranking'] = array();
+
+        while ($row = $ranking->fetch_assoc())
+        {
+            $data['Ranking'][] = array(
+                'Name' => $row['Name'],
+                'Score' => $row['Score']
+            );
+        }
+
+        die(json_encode($data));
+    }
+
+    public function start_game()
+    {
+        if (!isset($_GET['room_code']))
+            $this->returnError('Room code was not send');
+
+        $room = $this->model->existsRoom($_GET['room_code'])->fetch_assoc();
+
+        if (empty($room))
+            $this->returnError('Room does not exists');
+
+        if (!isset($_GET['player_name']))
+            $this->returnError('Player name was not send');
+
+        $game = $this->model->startGame($room['ID'], $_GET['player_name'])->fetch_assoc();
+
+        if (empty($game))
+            $this->returnError('Error starting game');
+
+        $data['Error'] = false;
+        $data['Game_ID'] = $game['ID'];
+
+        die(json_encode($data));
+    }
+
+    public function new_question()
+    {
+        if (!isset($_GET['game_id']))
+            $this->returnError('Game ID was not send');
+
+        $game = $this->model->getGame($_GET['game_id'])->fetch_assoc();
+
+        if (empty($game))
+            $this->returnError('Game does not exists');
+
+        $gameData;
+
+        if (empty($game['Data']))
+        {
+            $gameData[0] = 0;
+            $gameData[1] = rand(1, 5);
+            $gameData[2] = rand(1, 5);
+
+            while ($gameData[1] == $gameData[2])
+                $gameData[2] = rand(1, 5);
+
+            $gameData[3] = 0;
+            $gameData[4] = 1;
+            $gameData[5] = 1;
+        }
+        else
+            $gameData = explode(';', $game['Data']);
+
+        if (!$gameData[4])
+            $this->returnError('You have to answer the question');
+
+        $data['Error'] = false;
+        $data['Left'] = $gameData[1];
+        $data['Right'] = $gameData[2];
+
+        $invalid1 = 6 - $gameData[1];
+        $invalid2 = 6 - $gameData[2];
+
+        $array = array();
+        for ($i = 0; $i < 6; $i++)
+        {
+            do
+            {
+                $value = rand(1, 5);
+            } while ($value == $invalid1 || $value == $invalid2);
+
+            $array[$i] = $value;
+        }
+
+        $pos = rand(0, 5);
+
+        if (rand(0, 1))
+        {
+            $array[$pos] = $invalid1;
+
+            if ($pos % 2 == 0)
+                $gameData[1] = $array[$pos + 1];
+            else
+                $gameData[1] = $array[$pos - 1];    
+        }
+        else
+        {
+            $array[$pos] = $invalid2;
+            
+            
+            if ($pos % 2 == 0)
+                $gameData[2] = $array[$pos + 1];
+            else
+                $gameData[2] = $array[$pos - 1];    
+        }
+        
+        $pos = (int)($pos / 2);
+
+        $gameData[3] = $pos;
+        $gameData[4] = 0;
+
+        $gameDataString = $gameData[0] . ';' . $gameData[1] . ';' . $gameData[2] . ';' . $gameData[3] . ';' . $gameData[4] . ';' . $gameData[5];
+
+        $this->model->newQuestion($_GET['game_id'], $gameDataString);
+
+        $data['Options'] = array_chunk($array, 2);
+
+        die(json_encode($data));
+    }
+
+    public function verify_answer()
+    {
+        if (!isset($_GET['game_id']))
+            $this->returnError('Game ID was not send');
+
+        $game = $this->model->getGame($_GET['game_id'])->fetch_assoc();
+
+        if (empty($game))
+            $this->returnError('Game does not exists');
+
+        if (empty($game['Data']))
+            $this->returnError('You have to start the game first');
+
+        if (!isset($_GET['answer']))
+            $this->returnError('Answer was not send');
+        
+        $gameData = explode(';', $game['Data']);
+        
+        if ($gameData[4])
+            $this->returnError('The question was already answered');
+
+
+        $data['Error'] = false;
+        
+        if ($gameData[3] == $_GET['answer'])
+        {
+            $gameData[0] += $gameData[5];
+            $gameData[4] = 1;
+
+            $stringGameData = $gameData[0] . ';' . $gameData[1] . ';' . $gameData[2] . ';' . $gameData[3] . ';' . $gameData[4] . ';' . $gameData[5];
+
+            $this->model->updateGame($game['ID'], $stringGameData);
+        
+            $data['Correct'] = true;
+        }
+        else
+        {
+            $this->model->saveGame($game['Room_ID'], $game['NameUser'], $gameData[0]);
+            $this->model->deleteGame($_GET['game_id']);
+            $data['Correct'] = false;
+        }
+
+        $data['Score'] = $gameData[0];
+        
+        die(json_encode($data));
+    }
+
+    public function new_round()
+    {
+        if (!isset($_GET['game_id']))
+            $this->returnError('Game ID was not send');
+
+        $game = $this->model->getGame($_GET['game_id'])->fetch_assoc();
+
+        if (empty($game))
+            $this->returnError('Game does not exists');
+
+        if (empty($game['Data']))
+            $this->returnError('You have to start the game first');
+
+        $gameData = explode(';', $game['Data']);
+
+        if (!$gameData[4])
+            $this->returnError('You have to answer the question');
+
+        $gameData[4] = 1;
+        $gameData[5]++;
+
+        $gameDataString = $gameData[0] . ';' . $gameData[1] . ';' . $gameData[2] . ';' . $gameData[3] . ';' . $gameData[4] . ';' . $gameData[5];
+
+        $this->model->updateGame($game['ID'], $gameDataString);
+
+        $data['Error'] = false;
+        $data['Left'] = $gameData[1];
+        $data['Right'] = $gameData[2];
+
+        die(json_encode($data));
+    }
+
     public function getAction()
     {
-        // Aqui farei a vaiidação dos dados enviados e chamarei a função específica para trarar os dados
-        // Essa função irá utilizar do model para recuperar os dados do banco de dados ou chamar as funções espeficidas de outras classes
-        
         if (!isset($_GET['command']))
             $this->returnError('Command to execute was not send');
 
@@ -65,28 +292,22 @@ class ApiController
 
         if ($command == "create_room")
             $this->CreateRoom();
+        else if ($command == "ranking_general")
+            $this->ranking_general();
+        else if ($command == "ranking_room")
+            $this->ranking_room();
+        else if ($command == "start_game")
+            $this->start_game();
+        else if ($command == "new_question")
+            $this->new_question();
+        else if ($command == "verify_answer")
+            $this->verify_answer();
+        else if ($command == "new_round")
+            $this->new_round();
         else
             $this->returnError('Invalid command');
 
-        
-        /*
-        $result = $this->model->getAllData();
-    
-        if ($result === false)
-        {
-            $data['error'] = true;
-            $data['message'] = 'Ocorreu um erro ao recuperar os dados.';
-        } else
-        {
-            if ($result->num_rows > 0)
-            {
-                while ($row = $result->fetch_assoc())
-                    $data[] = $row;
-            }   
-        }
-        */
-
-        echo json_encode($this->data);
+        die(json_encode($this->data));
     }
 }
 ?>
