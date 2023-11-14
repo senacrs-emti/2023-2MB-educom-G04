@@ -38,13 +38,13 @@ section{
     position: relative;
 }
 
-
 h1{
     color: #000;
     text-align: center;
     font-family: Irish Grover;
     font-size: 25px;
     font-weight: 300;
+    margin-bottom: 30px;
 }
 
 .buttons a{
@@ -63,13 +63,36 @@ h1{
     color: #000;
 }
 
-.buttons{
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 100px;
+input{
+    height: 40px;
+    width: 100%;
+    text-align: center;
+    border-radius: 10px;
+    border-color: rgb(51, 59, 59);
+    outline: 0;
+    
 }
 
+.wrapper-menu{
+    display: flex;
+    flex-direction: column;
+}
 
+.wrapper-menu button{
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 3px solid blue;
+    color: white;
+    background-color: #1b1919;
+}
 
+.wrapper-menu a{
+    text-decoration: none;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 3px solid blue;
+    color: white;
+    background-color: #1b1919;
+}
