@@ -95,6 +95,40 @@ class ApiController
         die(json_encode($data));
     }
 
+    public function ranking_player_in_room()
+    {
+        if (!isset($_GET['room_code']))
+            $this->returnError('Room code was not send');
+
+        if (!isset($_GET['game_id']))
+            $this->returnError('Game ID was not send');
+
+        $data['Error'] = false;
+        $ranking = $this->model->getRankingPlayerInRoom($_GET['room_code']);
+        
+        $position = 0;
+        $counter = 1;
+        while ($row = $ranking->fetch_assoc())
+        {
+            if ($row['Game_ID'] == $_GET['game_id'])
+            {
+                $position = $counter;
+                break;
+            }
+
+            $counter++;
+        }
+
+        if ($position == 0)
+            die(json_encode($data));
+        
+
+        $data['Error'] = false;
+        $data['Position'] = $position;
+
+        die(json_encode($data));
+    }
+
     public function start_game()
     {
         if (!isset($_GET['room_code']))
@@ -150,12 +184,20 @@ class ApiController
         if (!$gameData[4])
             $this->returnError('You have to answer the question');
 
+        
+        
         $data['Error'] = false;
         $data['Left'] = $gameData[1];
         $data['Right'] = $gameData[2];
 
-        $invalid1 = 6 - $gameData[1];
-        $invalid2 = 6 - $gameData[2];
+        do
+        {
+            $randonValue = rand(2, 12);
+            $invalid1 = $randonValue - $gameData[1];
+            $invalid2 = $randonValue - $gameData[2];
+        } while ($invalid1 <= 0 || $invalid2 <= 0 || $invalid1 > 6 || $invalid2 > 6);
+
+        $data['Sum'] = $randonValue;
 
         $array = array();
         for ($i = 0; $i < 6; $i++)
@@ -241,7 +283,7 @@ class ApiController
         }
         else
         {
-            $this->model->saveGame($game['Room_ID'], $game['NameUser'], $gameData[0]);
+            $this->model->saveGame($game['Room_ID'], $game['NameUser'], $gameData[0], $_GET['game_id']);
             $this->model->deleteGame($_GET['game_id']);
             $data['Correct'] = false;
         }
@@ -296,6 +338,8 @@ class ApiController
             $this->ranking_general();
         else if ($command == "ranking_room")
             $this->ranking_room();
+        else if ($command == "ranking_player_in_room")
+            $this->ranking_player_in_room();
         else if ($command == "start_game")
             $this->start_game();
         else if ($command == "new_question")

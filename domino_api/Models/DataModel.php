@@ -38,6 +38,12 @@ class DataModel
         return $this->database->executeQuery($query);
     }
 
+    public function getRankingPlayerInRoom($roomId)
+    {
+        $query = 'SELECT * FROM ranking WHERE Room_ID = "'. $roomId .'" ORDER BY score DESC';
+        return $this->database->executeQuery($query);
+    }
+
     public function existsRoom($room)
     {
         $query = "SELECT * FROM room WHERE Code = '".$room."'";
@@ -47,7 +53,7 @@ class DataModel
     public function startGame($room, $player)
     {
         $query = "INSERT INTO games (Room_ID, NameUser) VALUES ('".$room."', '".$player."')";
-        $query2 = "SELECT * FROM games WHERE Room_ID = '".$room."' AND NameUser = '".$player."'";      
+        $query2 = 'SELECT * FROM games WHERE Room_ID = "'.$room.'" AND NameUser = "'.$player.'" ORDER BY Timestamp DESC LIMIT 1';     
         $this->database->executeQuery($query);
         return $this->database->executeQuery($query2);
     }
@@ -64,9 +70,9 @@ class DataModel
         $this->database->executeQuery($query);
     }
 
-    public function saveGame($roomId, $nameUser, $score)
+    public function saveGame($roomId, $nameUser, $score, $gameId)
     {
-        $query = "INSERT INTO ranking (Room_ID, Name, Score) VALUES ('".$roomId."', '".$nameUser."', '".$score."')";
+        $query = "INSERT INTO ranking (Room_ID, Name, Score, Game_ID) VALUES ('".$roomId."', '".$nameUser."', '".$score."', '".$gameId."')";
         $this->database->executeQuery($query);
     }
 

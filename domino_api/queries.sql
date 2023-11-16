@@ -23,5 +23,6 @@ CREATE TABLE Ranking (
     Name VARCHAR(255) NOT NULL,
     Score INT NOT NULL,
     Room_ID INT,
+    Game_ID INT UNIQUE,
     FOREIGN KEY (Room_ID) REFERENCES Room(ID)
 );
