@@ -1,8 +1,4 @@
 <?php
-//A fazer: criar um arquivo de configuração para as constantes e includes
-//A fazer: criar um arquivo de rotas para as requisições, o que inclui a criação de um arquivo .htaccess
-//A fazer: separar em duas classes os jogos online e offline e criar uma classe para o ranking (total 3 + a classe gerenciadora de requisições)
-
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASSWORD', '');
@@ -17,10 +13,41 @@ $database->connect();
 
 $api = new ApiController();
 
-//alguns dados são enviados via POST e outros via GET, chamarei um metodo para cada
 if ($_SERVER['REQUEST_METHOD'] === 'GET')
 {
-    $api->getAction();
+    if (!isset($_GET['command']))
+        $api->returnError('Command to execute was not send');
+
+    $command = $_GET['command'];
+
+    if ($command == "ranking_general")
+        $api->rankingGeneral();
+    else if ($command == "ranking_room")
+        $api->rankingRoom();
+    else if ($command == "ranking_player_in_room")
+        $api->rankingPlayerInRoom();
+    else
+        $api->returnError('Invalid command');
+}
+else
+{
+    if (!isset($_POST['command']))
+        $api->returnError('Command to execute was not send');
+
+    $command = $_POST['command'];
+
+    if ($command == "create_room")
+        $api->createRoom();
+    else if ($command == "start_game")
+        $api->startGame();
+    else if ($command == "new_question")
+        $api->newQuestion();
+    else if ($command == "verify_answer")
+        $api->verifyAnswer();
+    else if ($command == "new_round")
+        $api->newRound();
+    else
+        $api->returnError('Invalid command');
 }
 
 $database->disconnect();
