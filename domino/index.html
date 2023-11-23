@@ -3,23 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-    
+    <title>Dominó Matemático</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
-<body>
-    <section>
-        <div class="wrapper-sec">
-            <div class="container">
-                <div class="wrapper-menu">
-                    <h1>DOMINÓ MATEMÁTICO</h1>
+<body onload="PageIndex()">
+    <h1 class="title" onclick="PageIndex()">Dominó Matemático</h1>
 
-                    <a href="./entrarsala.html">Entrar na sala</a>
-                    <a href="./criarsala.html">Criar uma sala</a>
-                </div>
+    <div class="button-section" id="pageindex">
+        <a class="button" onclick="PageJoin()">Jogar</a>
+        <a class="button" onclick="PageCreate()">Criar Sala</a>
+        <a class="button">Ranking</a>
+    </div>
+
+    <div class="button-section" id="pagecreateroom">
+        <div class="room-code" id="roomcodebox">
+            <p>Código da Sala:&nbsp</p>
+            <p id="roomcode">123456</p>
+        </div>
+        <input type="text" name="roomname" id="roomname" placeholder="Inserir Nome da Sala" maxlength="20">
+        <a class="button" onclick="CreateRoom()" id="createroom">Criar Sala</a>
+        <a href="ranking.html" class="button" id="seeranking">Ver Ranking da Sala</a>
+    </div>
+
+    <div class="button-section" id="pagejoinroom">
+        <input type="text" name="playername" id="playername" placeholder="Inserir Seu Nome" maxlength="20">
+        <input type="text" name="roomname" id="roomcodeinput" placeholder="Inserir Nome da Sala" maxlength="20">
+        <a class="button" onclick="JoinRoom()" id="createroom">Entrar em Sala</a>
+    </div>
+
+    <div class="game-section" id="pagegame">
+        <div class="game-top">
+            <div>
+                <p>Tempo Restante:&nbsp</p>
+                <p id="timer">60</p>
+            </div>
+            <div>
+                <p>Round:&nbsp</p>
+                <p id="round">1</p>
+            </div>
+            <div>
+                <p>Pontuação:&nbsp</p>
+                <p id="score">0</p>
             </div>
         </div>
-    </section>
+        <div class="game-bottom">
+            <div class="game-left">
+                <div class="domino" id="option0" onclick="dominoClicked(0)"></div>
+                <div class="domino" id="option1" onclick="dominoClicked(1)"></div>
+                <div class="domino" id="option2" onclick="dominoClicked(2)"></div>
+            </div>
+            <div class="game-right">
+                <div class="game-sum">
+                    <p>Soma de:&nbsp</p>
+                    <p id="sum">0</p>
+                </div>
+                <div class="game-general" id="gamegeneral"></div>
+            </div>
+        </div>
+    </div>
 
+    <script src="script.js"></script>
 </body>
 </html>

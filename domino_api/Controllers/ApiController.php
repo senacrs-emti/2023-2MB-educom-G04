@@ -232,7 +232,7 @@ class ApiController
         $gameData[4] = 1;
         $gameData[5]++;
 
-        $gameDataString = implode(',', $gameData);
+        $gameDataString = implode(';', $gameData);
 
         $this->model->updateGame($game['ID'], $gameDataString);
 

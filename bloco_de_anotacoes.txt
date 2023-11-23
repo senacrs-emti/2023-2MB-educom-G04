@@ -1,15 +1,5 @@
 Rotas:
 
-Post:
-/create_room OK
-  Envia : Nome sala
-  Recebe: Código sala
-
-/start_game OK
-  Envia : Nome do jogador
-  Envia : Código da sala
-  Recebe: ID do jogo
-
 /new_question OK
   Envia : ID do jogo
   Recebe: Opções de resposta
