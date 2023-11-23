@@ -22,12 +22,18 @@ function PageIndex()
     document.getElementById("pagecreateroom").style.display = "none";
     document.getElementById("pagejoinroom").style.display = "none";
     document.getElementById("pagegame").style.display = "none";
+    document.getElementById("pageinstructions").style.display = "none";
 
     document.getElementById("gamegeneral").innerHTML = "";
 
-    isGameRunning = false;
-    baseTime = 60;
-    timeLeft = baseTime;
+    if (isGameRunning)
+    {
+        isGameRunning = false;
+        baseTime = 60;
+        timeLeft = baseTime;
+    
+        dominoClicked(-1);
+    }
 }
 
 function PageCreate()
@@ -36,6 +42,7 @@ function PageCreate()
     document.getElementById("pagecreateroom").style.display = "flex";
     document.getElementById("pagejoinroom").style.display = "none";
     document.getElementById("pagegame").style.display = "none";
+    document.getElementById("pageinstructions").style.display = "none";
 }
 
 function PageJoin()
@@ -44,6 +51,7 @@ function PageJoin()
     document.getElementById("pagecreateroom").style.display = "none";
     document.getElementById("pagejoinroom").style.display = "flex";
     document.getElementById("pagegame").style.display = "none";
+    document.getElementById("pageinstructions").style.display = "none";
 }
 
 function PageGame()
@@ -53,7 +61,18 @@ function PageGame()
     document.getElementById("pagejoinroom").style.display = "none";
     document.getElementById("pagegame").style.display = "none";
     document.getElementById("pagegame").style.display = "flex";
+    document.getElementById("pageinstructions").style.display = "none";
     RunGame();
+}
+
+function PageInstructions()
+{
+    document.getElementById("pageindex").style.display = "none";
+    document.getElementById("pagecreateroom").style.display = "none";
+    document.getElementById("pagejoinroom").style.display = "none";
+    document.getElementById("pagegame").style.display = "none";
+    document.getElementById("pagegame").style.display = "none";
+    document.getElementById("pageinstructions").style.display = "flex";
 }
 
 function CreateRoom()
@@ -194,7 +213,7 @@ function newRound()
                 left = json["Left"];
                 right = json["Right"];
 
-                document.getElementById("gamegeneral").innerHTML = "";
+                document.getElementById("gamegeneral").innerHTML = " ";
                 addDomino(left, right, 0);
             }
         } else {

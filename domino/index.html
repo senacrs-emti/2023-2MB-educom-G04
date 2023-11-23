@@ -28,7 +28,7 @@
     <div class="button-section" id="pagejoinroom">
         <input type="text" name="playername" id="playername" placeholder="Inserir Seu Nome" maxlength="20">
         <input type="text" name="roomname" id="roomcodeinput" placeholder="Inserir Código da Sala" maxlength="20">
-        <a class="button" onclick="JoinRoom()" id="createroom">Entrar em Sala</a>
+        <a class="button" onclick="PageInstructions()" id="createroom">Entrar em Sala</a>
     </div>
 
     <div class="game-section" id="pagegame">
@@ -60,6 +60,30 @@
                 <div class="game-general" id="gamegeneral"></div>
             </div>
         </div>
+    </div>
+    
+    <div class="instructions-page" id="pageinstructions">
+        <h2>Instruções de Jogo</h2>
+        <p>&ensp;
+            O jogo iniciará com uma peça de dominó no meio do tabuleiro,
+            as opções de resposta estarão ao lado esquerdo,
+            deve ser escolhida a peça onde algum dos seus lados ao se juntar
+            com algum dos lados das peças que já foram jogadas some a quantidade 
+            que aparece no parte superior do tabuleiro onde está escrito "Soma de".
+        </p>
+        <p>&ensp;
+            Ao acertar 4 peças em sequência o tabuleiro será limpo e uma nova peça
+            será sorteada para o próximo round de jogo. O tempo que você terá para 
+            acertar as 4 peças depende do round, no primeiro round o tempo será de 
+            60 segundos e esse tempo diminui 10 segundos a cada novo round, sendo o
+            mínimo de 20  segundos.
+        </p>
+        <p>&ensp;
+            Ao escolher uma resposta errado ou caso o tempo chegue ao fim,
+            você será redirecionado a uma página em que mostrará os 10 melhores
+            jogadores da sala atual e a sua posição no jogo que foi efetuado.
+        </p>
+        <a class="button" onclick="JoinRoom()">Iniciar</a>
     </div>
 
  <script src="./script.js"></script>
