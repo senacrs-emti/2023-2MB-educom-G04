@@ -24,6 +24,10 @@ function PageIndex()
     document.getElementById("pagegame").style.display = "none";
 
     document.getElementById("gamegeneral").innerHTML = "";
+
+    isGameRunning = false;
+    baseTime = 60;
+    timeLeft = baseTime;
 }
 
 function PageCreate()
