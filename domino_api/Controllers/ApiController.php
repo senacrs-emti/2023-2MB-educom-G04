@@ -243,7 +243,7 @@ class ApiController
         die(json_encode($data));
     }
 
-    private function rankingGeneral()
+    public function rankingGeneral()
     {
         $ranking = $this->model->getRankingGeneral();
 

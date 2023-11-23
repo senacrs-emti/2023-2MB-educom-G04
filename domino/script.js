@@ -23,6 +23,7 @@ function PageIndex()
     document.getElementById("pagejoinroom").style.display = "none";
     document.getElementById("pagegame").style.display = "none";
     document.getElementById("pageinstructions").style.display = "none";
+    document.getElementById("pageranking").style.display = "none";
 
     document.getElementById("gamegeneral").innerHTML = "";
 
@@ -43,6 +44,7 @@ function PageCreate()
     document.getElementById("pagejoinroom").style.display = "none";
     document.getElementById("pagegame").style.display = "none";
     document.getElementById("pageinstructions").style.display = "none";
+    document.getElementById("pageranking").style.display = "none";
 }
 
 function PageJoin()
@@ -52,6 +54,7 @@ function PageJoin()
     document.getElementById("pagejoinroom").style.display = "flex";
     document.getElementById("pagegame").style.display = "none";
     document.getElementById("pageinstructions").style.display = "none";
+    document.getElementById("pageranking").style.display = "none";
 }
 
 function PageGame()
@@ -62,6 +65,7 @@ function PageGame()
     document.getElementById("pagegame").style.display = "none";
     document.getElementById("pagegame").style.display = "flex";
     document.getElementById("pageinstructions").style.display = "none";
+    document.getElementById("pageranking").style.display = "none";
     RunGame();
 }
 
@@ -73,6 +77,58 @@ function PageInstructions()
     document.getElementById("pagegame").style.display = "none";
     document.getElementById("pagegame").style.display = "none";
     document.getElementById("pageinstructions").style.display = "flex";
+    document.getElementById("pageranking").style.display = "none";
+}
+
+function PageRanking(title)
+{
+    document.getElementById("pageindex").style.display = "none";
+    document.getElementById("pagecreateroom").style.display = "none";
+    document.getElementById("pagejoinroom").style.display = "none";
+    document.getElementById("pagegame").style.display = "none";
+    document.getElementById("pagegame").style.display = "none";
+    document.getElementById("pageinstructions").style.display = "none";
+
+    let ranking = document.getElementById("pageranking");
+
+    ranking.style.display = "flex";
+    ranking.innerHTML = "<h2>"+title+"</h2>";
+    
+    ranking.innerHTML += "<div class='ranking-line'><h3 class='line-pos'>Posição</h3><h3 class='line-name'>Nome<h3><h3class='line-points'>Pontuação<h3></div>";
+
+    /*
+    ranking.innerHTML += "<div class='ranking-line'><h3 class='line-pos'>1°</h3><h3 class='line-name'>teste<h3><h3class='line-points'>15<h3></div><div class='ranking-line'><h3 class='line-pos'>2°</h3><h3 class='line-name'>teste</h3><h3 class='line-points'>10</h3></div>";*/
+}
+
+function RankingGeneral(title)
+{
+    PageRanking(title);
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", api + "?command=ranking_general");
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send();
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            let json = JSON.parse(xhr.responseText);
+            console.log(json);
+
+            if (json["Error"] == true) {
+                return;
+            } else {
+                let ranking = document.getElementById("pageranking");
+
+                for (let i = 0; i < json["Ranking"].length; i++)
+                {
+                    ranking.innerHTML += "<div class='ranking-line'><h3 class='line-pos'>"+(i+1)+"°</h3><h3 class='line-name'>"+json["Ranking"][i]["Name"]+"<h3><h3class='line-points'>"+json["Ranking"][i]["Score"]+"<h3></div>";
+                }
+
+                console.log("Teste");
+            }
+        } else {
+            alert(`Error ${xhr.status}: ${xhr.statusText}`);
+        }
+    };
 }
 
 function CreateRoom()
@@ -272,7 +328,7 @@ function dominoClicked(idx)
                         round++;
                         correctcount = 0;
 
-                        if (baseTime > 20)
+                        if (baseTime > 10)
                         {
                             baseTime -= 10;
                             timeLeft = baseTime;

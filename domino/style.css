@@ -168,6 +168,32 @@ body{
     text-align: justify;
 }
 
+.ranking-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40vw;
+    gap: 5px;
+}
+
+.ranking-section h2{
+    margin-bottom: 10px;
+}
+
+.ranking-line{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    padding: 5px;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+.ranking-line h3{
+    width: 30%;
+    text-align: center;
+}
+
 .domino{
     display: flex;
     flex-direction: row;

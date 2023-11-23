@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS DominoOnline;
+CREATE DATABASE IF NOT EXISTS dominoonline;
 
-USE DominoOnline;
+USE dominoonline;
 
 CREATE TABLE Room (
     ID INT PRIMARY KEY AUTO_INCREMENT,
