@@ -24,8 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET')
         $api->rankingGeneral();
     else if ($command == "ranking_room")
         $api->rankingRoom();
-    else if ($command == "ranking_player_in_room")
-        $api->rankingPlayerInRoom();
     else
         $api->returnError('Invalid command');
 }

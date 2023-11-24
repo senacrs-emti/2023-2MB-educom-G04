@@ -3,6 +3,7 @@ let api = "./../domino_api/index.php";
 let isGameRunning = false;
 
 let gameCode;
+let roomCode;
 
 let points = 0;
 let baseTime = 60;
@@ -26,6 +27,11 @@ function PageIndex()
     document.getElementById("pageranking").style.display = "none";
 
     document.getElementById("gamegeneral").innerHTML = "";
+
+    document.getElementById("roomcodebox").style.display = "none";
+    document.getElementById("seeranking").style.display = "none";
+    document.getElementById("createroom").style.display = "block";
+    document.getElementById("roomname").disabled = false;
 
     if (isGameRunning)
     {
@@ -78,9 +84,14 @@ function PageInstructions()
     document.getElementById("pagegame").style.display = "none";
     document.getElementById("pageinstructions").style.display = "flex";
     document.getElementById("pageranking").style.display = "none";
+
+    document.getElementById("roomcodebox").style.display = "none";
+    document.getElementById("seeranking").style.display = "none";
+    document.getElementById("createroom").style.display = "block";
+    document.getElementById("roomname").disabled = false;
 }
 
-function PageRanking(title)
+function PageRanking(title, foo)
 {
     document.getElementById("pageindex").style.display = "none";
     document.getElementById("pagecreateroom").style.display = "none";
@@ -93,16 +104,41 @@ function PageRanking(title)
 
     ranking.style.display = "flex";
     ranking.innerHTML = "<h2>"+title+"</h2>";
-    
+    ranking.innerHTML += "<a class='button' onclick=\""+foo+"('"+title+"')\" style='width: 40%;'>Atualizar Ranking</a>";
     ranking.innerHTML += "<div class='ranking-line'><h3 class='line-pos'>Posição</h3><h3 class='line-name'>Nome<h3><h3class='line-points'>Pontuação<h3></div>";
+}
 
-    /*
-    ranking.innerHTML += "<div class='ranking-line'><h3 class='line-pos'>1°</h3><h3 class='line-name'>teste<h3><h3class='line-points'>15<h3></div><div class='ranking-line'><h3 class='line-pos'>2°</h3><h3 class='line-name'>teste</h3><h3 class='line-points'>10</h3></div>";*/
+function RoomRanking(title)
+{
+    PageRanking(title, "RoomRanking");
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", api + "?command=ranking_room&room_code=" + roomCode);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.send();
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            let json = JSON.parse(xhr.responseText);
+
+            if (json["Error"] == true) {
+                return;
+            } else {
+                let ranking = document.getElementById("pageranking");
+            
+                for (let i = 0; i < json["Ranking"].length; i++)
+                {
+                    ranking.innerHTML += "<div class='ranking-line'><h3 class='line-pos'>"+(i+1)+"°</h3><h3 class='line-name'>"+json["Ranking"][i]["Name"]+"<h3><h3class='line-points'>"+json["Ranking"][i]["Score"]+"<h3></div>";
+                }
+            }
+        } else {
+            alert(`Error ${xhr.status}: ${xhr.statusText}`);
+        }
+    };
 }
 
 function RankingGeneral(title)
 {
-    PageRanking(title);
+    PageRanking(title, "RankingGeneral");
 
     let xhr = new XMLHttpRequest();
     xhr.open("GET", api + "?command=ranking_general");
@@ -111,19 +147,16 @@ function RankingGeneral(title)
     xhr.onload = function() {
         if (xhr.status === 200) {
             let json = JSON.parse(xhr.responseText);
-            console.log(json);
 
             if (json["Error"] == true) {
                 return;
             } else {
                 let ranking = document.getElementById("pageranking");
-
+                
                 for (let i = 0; i < json["Ranking"].length; i++)
                 {
                     ranking.innerHTML += "<div class='ranking-line'><h3 class='line-pos'>"+(i+1)+"°</h3><h3 class='line-name'>"+json["Ranking"][i]["Name"]+"<h3><h3class='line-points'>"+json["Ranking"][i]["Score"]+"<h3></div>";
                 }
-
-                console.log("Teste");
             }
         } else {
             alert(`Error ${xhr.status}: ${xhr.statusText}`);
@@ -154,9 +187,10 @@ function CreateRoom()
                 document.getElementById("roomcode").innerHTML = json["Code"];
                 document.getElementById("roomcodebox").style.display = "flex";
                 document.getElementById("seeranking").style.display = "block";
-                document.getElementById("seeranking").href = api + "?command=ranking_room&room_code=" + json["Code"];
                 document.getElementById("createroom").style.display = "none";
                 document.getElementById("roomname").disabled = true;
+
+                roomCode = json["Code"];
             }
         } else {
             alert(`Error ${xhr.status}: ${xhr.statusText}`);
@@ -167,7 +201,7 @@ function CreateRoom()
 function JoinRoom() 
 {
     let player = document.getElementById("playername").value;
-    let roomCode = document.getElementById("roomcodeinput").value;
+    roomCode = document.getElementById("roomcodeinput").value;
 
     if (player == "")
     {
@@ -342,8 +376,7 @@ function dominoClicked(idx)
                 else
                 {
                     isGameRunning = false;
-                    alert("Errou!");    
-                    window.location.reload(); //go to ranking
+                    RoomRanking("Ranking da Sala " + roomCode);
                 }
                 answered = true;
             }
@@ -393,9 +426,8 @@ setInterval(function() {
 
     if (timeLeft == 0)
     {
-        alert("Acabou o tempo!");
         dominoClicked(-1);
-        window.location.reload(); //go to ranking
+        RoomRanking("Ranking da Sala " + roomCode);
     }
 
     document.getElementById("timer").innerHTML = timeLeft;

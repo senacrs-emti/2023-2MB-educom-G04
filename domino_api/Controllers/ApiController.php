@@ -286,54 +286,5 @@ class ApiController
 
         die(json_encode($data));
     }
-
-    public function rankingPlayerInRoom()
-    {
-        if (!isset($_GET['room_code']))
-            $this->returnError('Room code was not send');
-
-        if (!isset($_GET['game_id']))
-            $this->returnError('Game ID was not send');
-
-        $data['Error'] = false;
-        $ranking = $this->model->getRankingPlayerInRoom($_GET['room_code']);
-        
-        $position = 0;
-        $counter = 1;
-        while ($row = $ranking->fetch_assoc())
-        {
-            if ($row['Game_ID'] == $_GET['game_id'])
-            {
-                $position = $counter;
-                break;
-            }
-            $counter++;
-        }
-
-        if ($position == 0)
-            die(json_encode($data)); 
-        
-        $roomId = $this->model->existsRoom($_GET['room_code'])->fetch_assoc();
-
-        if (empty($roomId))
-            $this->returnError('Room does not exists');
-        
-        $ranking = $this->model->getRankingRoom($roomId['ID']);
-
-        $data['Ranking'] = array();
-    
-        while ($row = $ranking->fetch_assoc())
-        {
-            $data['Ranking'][] = array(
-                'Name' => $row['Name'],
-                'Score' => $row['Score']
-            );
-        }
-
-        $data['Error'] = false;
-        $data['Position'] = $position;
-
-        die(json_encode($data));
-    }
 }
 ?>

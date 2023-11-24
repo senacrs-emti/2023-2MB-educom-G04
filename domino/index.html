@@ -22,7 +22,7 @@
         </div>
         <input type="text" name="roomname" id="roomname" placeholder="Inserir Nome da Sala" maxlength="20">
         <a class="button" onclick="CreateRoom()" id="createroom">Criar Sala</a>
-        <a href="ranking.html" class="button" id="seeranking">Ver Ranking da Sala</a>
+        <a class="button" id="seeranking" onclick="RoomRanking('Ranking da Sala ')">Ver Ranking da Sala</a>
     </div>
 
     <div class="button-section" id="pagejoinroom">
@@ -83,7 +83,7 @@
             você será redirecionado a uma página em que mostrará os 10 melhores
             jogadores da sala atual e a sua posição no jogo que foi efetuado.
         </p>
-        <a class="button" onclick="JoinRoom()">Iniciar</a>
+        <a class="button" onclick="JoinRoom()">Iniciar Jogo</a>
     </div>
 
     <div class="ranking-section" id="pageranking">

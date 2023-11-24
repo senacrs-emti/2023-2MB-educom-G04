@@ -38,12 +38,6 @@ class DataModel
         return $this->database->executeQuery($query);
     }
 
-    public function getRankingPlayerInRoom($roomId)
-    {
-        $query = 'SELECT * FROM ranking WHERE Room_ID = "'. $roomId .'" ORDER BY score DESC';
-        return $this->database->executeQuery($query);
-    }
-
     public function existsRoom($room)
     {
         $query = "SELECT * FROM room WHERE Code = '".$room."'";
